@@ -2,11 +2,13 @@
 #include <errno.h>
 #include <netinet/in.h>
 #include <stddef.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <unistd.h>
 
-#include "server.h"
 #include "talk.h"
 
 static int cs428_listener(in_port_t port) {
@@ -29,7 +31,7 @@ static int cs428_listener(in_port_t port) {
     return listener;
 }
 
-int cs428_server(in_port_t port, int input_fd, int output_fd) {
+static int cs428_server(in_port_t port, int input_fd, int output_fd) {
     int listener = cs428_listener(port);
     if (listener < 0) {
         return listener;
@@ -45,4 +47,17 @@ int cs428_server(in_port_t port, int input_fd, int output_fd) {
     result = cs428_talk(input_fd, client, output_fd);
     close(client);
     return result;
+}
+
+int main(int argc, const char *const argv[]) {
+    if (argc < 2) {
+        fprintf(stderr, "Usage: %s PORT\n", argv[0]);
+        return EXIT_FAILURE;
+    }
+
+    int result = cs428_server(atoi(argv[1]), STDIN_FILENO, STDOUT_FILENO);
+    if (result < 0) {
+        fprintf(stderr, "%s: %s\n", argv[0], strerror(-result));
+        return EXIT_FAILURE;
+    }
 }
