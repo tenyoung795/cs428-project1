@@ -5,6 +5,8 @@
 #include <sys/select.h>
 #include <unistd.h>
 
+#include "talk.h"
+
 static ssize_t cs428_tee(int input_fd, int output_fd) {
     char buffer[BUFSIZ];
     ssize_t result = read(input_fd, buffer, sizeof(buffer));
@@ -19,7 +21,7 @@ static ssize_t cs428_tee(int input_fd, int output_fd) {
     return result;
 }
 
-static int cs428_talk(int input_fd, int peer_socket, int output_fd) {
+int cs428_talk(int input_fd, int peer_socket, int output_fd) {
     fd_set fds;
     FD_ZERO(&fds);
     FD_SET(input_fd, &fds);
