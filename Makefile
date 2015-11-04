@@ -1,9 +1,12 @@
-CC=gcc
-all: server.o client.o
+CFLAGS=-std=c11 -Wall -Wextra
 
-server.o:
-		$(CC) -o server.o -std=c11 server.c talk.c
-client.o:
-		$(CC) -o client.o -std=c11 client.c talk.c
+all: server client
+
+server: server.c talk.o
+client: client.c talk.o
+talk.o: talk.c talk.h
+
+.PHONY: clean
+
 clean:
-	rm *.o *.out
+	rm -f *.o server client
